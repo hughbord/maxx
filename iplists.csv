@@ -1,0 +1,87 @@
+# Free Lists
+blocklist.de attackers,blocklist.de,free,http://lists.blocklist.de/lists/all.txt
+EmergingThreats.net IP Block List,emergingthreats,free,http://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt
+# I-Block Lists - General (you need an account)
+#Bad pornography and pedophile sites,badporno,Squidblacklist,nndhjdnpxvydcupzaann
+#IPs of Anti-Infringement Organizations,antiinfringement,I-Blocklist,srzondksmjuwsvmgdbhi
+#Government IP addresses,government,I-Blocklist,lakuncfhfhgiqghqxjzi
+#P2P Allow,p2pallow,I-Blocklist,nrylrfwkqpcnqfszvunb
+#Spammers Blacklist,spammers,I-Blocklist,rynxmrknfjysesjtjlxy
+#P2P IP rages of people sharing pedo stuff,pedos,I-Blocklist,dufcxgnbjsdwmwctgfuj
+#US Government-Military-Law Enforcement-Intel Agencies,usgov,Squidblacklist,chykyvyiwrfszbqynhnd
+#Malicious-pornography-ads-trackers-dating-piracy-proxies,prime,Squidblacklist,tkyphgqwfqmawathcozn
+#Virus-botnet-malware-adware-apt-drive by-infectious,malicious,Squidblacklist,ffxgwdvcgelinvypvhuz
+#Torrent trackers and piracy related websites,piracyrelated,Squidblacklist,gzuamdjmitutrcvsmuwv
+#Advertisements and tracking related,adssquidlist,Squidblacklist,fruzekpkpzlmzozmuuhx
+#Http proxies,httpproxies,Squidblacklist,xafnpguypyaewkmuugbd
+#IP Ranges trying to stop filesharing-anti-p2p activity-strong financial interest in copyrighted material-government ranges-companies having strong financial interest in government #work,level1,Bluetack,ydxerpxkpcfqjaybcssw
+#General corporate ranges-Ranges used by labs or researchers and proxies,level2,Bluetack,gyisgnzbhppbvsphucsw
+All the known Microsoft ranges,microsoft,Bluetack,xshktygkujudfnjfioro
+#Intended to be used by webmasters to block hostile spiders from their web sites,spiders,Bluetack,mcvxsnihddgutbjfbghy
+#Contains hijacked IPs and known IPs that are used to deliver spam,hijacked,Bluetack,usrcshglbiilevmyfhse
+#Contains known Hackers and such people in it,dshield,Bluetack,xpbqleszmajjesnzddhv
+#List of people who have been reported for bad deeds in p2p,badpeers,Bluetack,cwworuawihqvocglcoss
+#Contains advertising trackers and a short list of bad or intrusive porn sites,adsbluetack,Bluetack,dgxtneitpuvgqqcpfulq
+#Known malicious spyware and adware IP Address ranges,spyware,Bluetack,llvtlsjyoyiczbkjsxpf
+#Contains all known Educational Institutions,edu,Bluetack,imlmncgrkbnacgcwfjvh
+#The level3 list is aka the paranoid list,level3,Bluetack,uwnukjqktoggdknzrhgh
+#Contains addresses of suspicious IPs that are under investigation,rangetest,Bluetack,plkehquoahljmyxjixpu
+#Contains advertising trackers and a short list of bad intrusive porn sites,ads,Bluetack,dgxtneitpuvgqqcpfulq
+#Forum Spam,forumspam,Bluetack,ficutxiwawokxlcyoeye
+#IP addresses related to current web server hack and exploit attempts that have been logged by us or can be found in and cross referenced with other related IP #databases,webexploit,Bluetack,ghlzqtqxnzctvvajwwag
+#DROP,drop,Spamhaus,zbdlwrqkabxbcppvrnos
+## I-Block Lists - Organisations
+#The Onion Router,onion,I-Blocklist,togdoptykrlolpddwbvz
+#Amazon,amazon,I-Blocklist,himxdtcxttxaaxqzgogt
+#Facebook,facebook,I-Blocklist,gvbjwjdedklmezhpgudg
+#Twitter,twitter,I-Blocklist,hkufkqvsgivyzzggrtww
+#CloudFlare,cloudflare,I-Blocklist,mkinfvxburnbsdijdtxk
+#Apple,apple,I-Blocklist,aphcqvpxuqgrkgufjruj
+#LogMeIn,logmein,I-Blocklist,tgbankumtwtrzllndbmb
+#Steam,steam,I-Blocklist,cnxkgiklecdaihzukrud
+#Xfire,xfire,I-Blocklist,ppqqnyihmcrryraaqsjo
+#Blizzard,blizzard,I-Blocklist,ercbntshuthyykfkmhxc
+#Ubisoft,ubisoft,I-Blocklist,etmcrglomupyxtaebzht
+#Nintendo,nintendo,I-Blocklist,pevkykuhgaegqyayzbnr
+#Activision,activision,I-Blocklist,gfnxlhxsijzrcuxwzebb
+#Sony Online Entertainment,sony,I-Blocklist,tukpvrvlubsputmkmiwg
+#Crowd Control Productions,crowd,I-Blocklist,eveiyhgmusglurfmjyag
+#Linden Lab,linden,I-Blocklist,qnjdimxnaupjmpqolxcv
+#Electronic Arts,ea,I-Blocklist,ejqebpcdmffinaetsvxj
+#Square Enix,squarenix,I-Blocklist,odyaqontcydnodrlyina
+#NCSoft,ncsoft,I-Blocklist,mwjuwmebrnzyyxpbezxu
+#Riot Games,riotgames,I-Blocklist,sdlvfabdjvrdttfjotcy
+#Punk Buster,punkbuster,I-Blocklist,zvwwndvzulqcltsicwdg
+#Joost,joost,I-Blocklist,alxugfmeszbhpxqfdits
+#Pandora,pandora,I-Blocklist,aevzidimyvwybzkletsg
+#The Pirate Bay,priatebay,I-Blocklist,nzldzlpkgrcncdomnttb
+## I-Block Lists - ISPs
+#AOL,aol,I-Blocklist,toboaiysofkflwgrttmb
+#Comcast,comcast,I-Blocklist,rsgyxvuklicibautguia
+#Cablevision,cablevision,I-Blocklist,dwwbsmzirrykdlvpqozb
+#Verizon,verizon,I-Blocklist,cdmdbprvldivlqsaqjol
+#ATT,att,I-Blocklist,grbtkzijgrowvobvessf
+#Cox Communications,coxcomm,I-Blocklist,nlgdvmvfxvoimdunmuju
+#Time Warner Cable,timewarnercable,I-Blocklist,aqtsnttnqmcucwrjmohd
+#Charter,charter,I-Blocklist,htnzojgossawhpkbulqw
+#Embarq,embarq,I-Blocklist,twdblifaysaqtypevvdp
+#Suddenlink,suddenlink,I-Blocklist,psaoblrwylfrdsspfuiq
+#Sprint,sprint,I-Blocklist,hngtqrhhuadlceqxbrob
+## I-Block Lists - Countries
+#Andorra,andorra,I-Blocklist,ad
+#United Arab Emirates,unitedae,I-Blocklist,ae
+#Afghanistan,Afghanistan,I-Blocklist,af
+#Antigua and Barbuda,antiguabarbuda,I-Blocklist,ag
+#Anguilla,Anguilla,I-Blocklist,ai
+#Albania,Albania,I-Blocklist,al
+#Armenia,Armenia,I-Blocklist,am
+#Netherlands Antilles,netherlands-antilles,I-Blocklist,an
+#Angola,Angola,I-Blocklist,ao
+#Non-spec Asia Pas Location,asiapas,I-Blocklist,ap
+#Argentina,Argentina,I-Blocklist,ar
+#American Samoa,americansamoa,I-Blocklist,as
+#Austria,Austria,I-Blocklist,at
+#Australia,Australia,I-Blocklist,au
+#Aruba,Aruba,I-Blocklist,aw
+#Aland Islands,AlandIslands,I-Blocklist,ax
+#Azerbaijan,Azerbaijan,I-Blocklist,az
