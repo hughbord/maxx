@@ -10,12 +10,12 @@ fi
 . ".env"
 
 if [ "$IPBLUSER" = "" ]; then
-    echo "Please ensure you have a IPBLUSER set in .env"
+    echo "Please ensure you have a IPBLUSER set in .env, you dumb fuck."
     exit 1
 fi
 
 if [ "$IPBLPIN" = "" ]; then
-    echo "Please ensure you have a IPBLPIN set in .env"
+    echo "Please ensure you have a IPBLPIN set in .env, you dumb fuck."
     exit 1
 fi
 
@@ -30,7 +30,7 @@ function CLEAR { # Clears firewall rules
     $iptables -t mangle -X
 }
 
-function SHOWALLHELP { # Show all the help for all the things
+function SHOW_ALL_HELP { # Show all the help for all the things
     for i in "${MAXXMODULES[@]}"
     do
         if [ $i != 'HELP' ]
@@ -56,7 +56,7 @@ function SHOWALLHELP { # Show all the help for all the things
 # 	return 1
 # }
 
-function ALLOWPORTS { # Cycle through devices and allow in and out ports, with rate limiting
+function ALLOW_PORTS { # Cycle through devices and allow in and out ports, with rate limiting
     echo  -ne " * Allowing TCP IN eth0: "
     for port in $TCPPORTSIN; do
         echo -ne " $port"
@@ -82,7 +82,7 @@ function ALLOWPORTS { # Cycle through devices and allow in and out ports, with r
     done
 }
 
-function ALLOWIPS {
+function ALLOW_IPS {
     echo  -ne "\n * Allowing IPS TCP: "
     
     for port in $TCPPIPSIN; do
@@ -98,24 +98,24 @@ function ALLOWIPS {
 }
 
 
-function ALLOWLOCALHOST { # Allow localhost for firewall
+function ALLOW_LOCALHOST { # Allow localhost for firewall
     echo " * Allowing Localhost..."
     $iptables -A INPUT -i lo -j ACCEPT
     $iptables -A OUTPUT -o lo -j ACCEPT
 }
 
-function IPSETMAKE { # Makes a new IPSET list.
+function IPSET_MAKE { # Makes a new IPSET list.
     /usr/sbin/ipset create "$1" hash:net family inet hashsize 65536 maxelem 1048576 && \
-    echo -ne "\t * Created $1 IPSet...\n" || echo -ne "\t * IPSet list $1 appears to alredy exist...\n"
+    echo -ne "\t * Created $1 IPSet...\n" || /usr/sbin/ipset flush "$1" #echo -ne "\t * IPSet list $1 appears to alredy exist...\n"
 }
 
-function ALLOWSTATES { # Allow states
+function ALLOW_STATES { # Allow states
     $iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
     $iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     $iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 }
 
-function DROPEVERYTHING { # Drop all remaining traffic that doesn't fit with the rules
+function DROP_EVERYTHING { # Drop all remaining traffic that doesn't fit with the rules
     echo -ne "\n * Dropping everything else on TCP and UDP...\n"
     #$iptables -A INPUT -p udp -j LOG --log-prefix "fw-bl-udp-drop: " --log-level 7
     $iptables -A INPUT -p udp -j DROP
@@ -125,15 +125,15 @@ function DROPEVERYTHING { # Drop all remaining traffic that doesn't fit with the
 }
 
 # Get IP Blocklist List
-function GETBLOCKLIST { # Downloads iblocklist.com blacklists (you need an account)
+function GET_BLOCK_LIST { # Downloads iblocklist.com blacklists (you need an account)
     wget -qO- "$2"  | sed -e "s/^/add $1 /" > "$TMP_DIR/$1.txt" && ipset restore < "$TMP_DIR/$1.txt" && rm "$TMP_DIR/$1.txt"
 }
 
-function GETIPBLOCKLIST {
+function GET_IP_BLOCKLIST {
     wget -qO- "http://list.iblocklist.com/?list=$2&fileformat=cidr&archiveformat=gz&username=$IPBLUSER&pin=$IPBLPIN" | gunzip | tail -n +2 | sed  -e '/^#/ d' -e '/^\s*$/d' |  awk '!x[$0]++' - | sed -e "s/^/add $1 /" > "$TMP_DIR/$1.txt" && ipset restore < "$TMP_DIR/$1.txt" && rm "$TMP_DIR/$1.txt"
 }
 
-function IPSETSAVEFILE {
+function IPSET_SAVE_FILE {
     /usr/sbin/ipset save > "$IPLISTALL"
 }
 
@@ -141,9 +141,9 @@ function IPSETRESTOREFILE {
     /usr/sbin/ipset restore < "$IPLISTALL"
 }
 
-BLNAME=()
+BL_NAMES=()
 
-function DLALLLISTS { # Download all free and paid lists (will split this later)
+function DL_ALL_LISTS { # Download all free and paid lists (will split this later)
     echo -en " * Downloading lists...\n"
     
     while read fdesc ffname fauthor furl
@@ -156,17 +156,17 @@ function DLALLLISTS { # Download all free and paid lists (will split this later)
             echo -ne " * Saving $ffname...\n"
             
             # Make ipset name array here
-            BLNAME+=("$ffname")
+            BL_NAMES+=("$ffname")
             
             if [[ "$fauthor" == "free" ]]
             then
-                /usr/sbin/ipset destroy $ffname
-                IPSETMAKE $ffname
-                GETBLOCKLIST $ffname $furl $fauthor $fdesc
+                #/usr/sbin/ipset destroy $ffname
+                IPSET_MAKE $ffname
+                GET_BLOCK_LIST $ffname $furl $fauthor $fdesc
             else
-                /usr/sbin/ipset destroy $ffname
-                IPSETMAKE $ffname
-                GETIPBLOCKLIST $ffname $furl $fauthor $fdesc
+                #/usr/sbin/ipset destroy $ffname
+                IPSET_MAKE $ffname
+                GET_IP_BLOCKLIST $ffname $furl $fauthor $fdesc
             fi
         fi
         
@@ -180,15 +180,15 @@ function DLALLLISTS { # Download all free and paid lists (will split this later)
     IFS=,
 }
 
-function IPMASQ {
+function IP_MASQ {
     $iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
     $iptables -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
     $iptables -A FORWARD -i eth0 -o tun0 -j ACCEPT
 }
 
-function LOADBL { # Restores blacklists into the firewall
+function LOAD_BL { # Restores blacklists into the firewall
     echo " * Loading blacklists..."
-    for i in "${BLNAME[@]}"
+    for i in "${BL_NAMES[@]}"
     do
         echo -ne "\t * Restoring blacklist $i..."
         $iptables -A INPUT -m set --match-set "$i" src -j LOG --log-prefix "$i-bl-in: " --log-level 7
@@ -205,45 +205,94 @@ function LOADBL { # Restores blacklists into the firewall
         
         echo -ne " restored.\n"
     done
-
     
+    
+}
+
+function PORTSCAN_PROTECT {
+    $iptables -N port-scanning
+    $iptables -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
+    $iptables -A port-scanning -j DROP
+}
+
+function ICMP_BLOCK { # Specify network device to block ICMP
+    $iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+    $iptables -A INPUT -i $1 -p icmp --icmp-type echo-request -j DROP
+}
+
+function ICMP_ALLOW { # Specify network device to block ICMP
+    $iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+    $iptables -A INPUT -i $1 -p icmp --icmp-type echo-request -j DROP
+}
+
+function MAC_ADDRESS_BLOCK {
+    $iptables -A INPUT -m mac --mac-source $1 -j DROP
+}
+
+function MAC_ADDRESS_ALLOW {
+    $iptables -A INPUT -m mac --mac-source $1 -j ACCEPT
+}
+
+function BLOCK_IP_INTERFACE { # BLOCK_IP_INTERFACE eth0 1.1.1.1
+    $iptables -A INPUT -i $1 -s $2 -j DROP
+}
+
+function ALLOW_IP_INTERFACE { # ALLOW_IP_INTERFACE eth0 1.1.1.1
+    $iptables -A INPUT -i $1 -s $2 -j ACCEPT
+}
+
+function BLOCK_IPSET_INTERFACE { # BLOCK_IPSET_INTERFACE eth0
+    $iptables -A INPUT -i $1 -m set --match-set "blacklist" -j DROP
+}
+
+function BLOCK_BOGONS {
+    _subnets=("224.0.0.0/4" "169.254.0.0/16" "172.16.0.0/12" "192.0.2.0/24" "192.168.0.0/16" "10.0.0.0/8" "0.0.0.0/8" "240.0.0.0/5")
+    
+    for _sub in "${_subnets[@]}" ; do
+        $iptables -A PREROUTING -t mangle  -s "$_sub" --log-prefix "$_sub-bogon-bl: " --log-level 7
+        $iptables -A PREROUTING -t mangle  -s "$_sub" -j DROP
+    done
+    
+    $iptables -t mangle -A PREROUTING -s 127.0.0.0/8 ! -i lo --log-prefix "$_sub-bogon-bl: " --log-level 7
+    $iptables -t mangle -A PREROUTING -s 127.0.0.0/8 ! -i lo -j DROP
 }
 
 function IRC_FIREWALL {
     CLEAR
-    ALLOWSTATES
-    ALLOWLOCALHOST
-    ALLOWPORTS
-    # BLOCK BOGONS
-    # Other IRC shit
-    IPSETSAVEFILE
-    DLALLLISTS
-    LOADBL
-    IPMASQ
-    DROPEVERYTHING
+    ALLOW_STATES
+    ALLOW_LOCALHOST
+    ALLOW_PORTS
+    PORTSCAN_PROTECT
+    BLOCK_BOGONS
+    ICMP_BLOCK $ETH
+    IPSET_SAVE_FILE
+    DL_ALL_LISTS
+    LOAD_BL
+    IP_MASQ
+    DROP_EVERYTHING
 }
 
 function BASIC_PI {
     CLEAR
-    ALLOWSTATES
-    ALLOWLOCALHOST
-    ALLOWPORTS
-    DLALLLISTS
-    IPSETSAVEFILE
-    LOADBL
-    IPMASQ
-    DROPEVERYTHING
+    ALLOW_STATES
+    ALLOW_LOCALHOST
+    ALLOW_PORTS
+    DL_ALL_LISTS
+    IPSET_SAVE_FILE
+    LOAD_BL
+    IP_MASQ
+    DROP_EVERYTHING
 }
 
 function BASIC_FIREWALL {
     CLEAR
-    ALLOWSTATES
-    ALLOWLOCALHOST
-    ALLOWPORTS
-    DLALLLISTS
-    IPSETSAVEFILE
-    LOADBL
-    DROPEVERYTHING
+    ALLOW_STATES
+    ALLOW_LOCALHOST
+    ALLOW_PORTS
+    DL_ALL_LISTS
+    IPSET_SAVE_FILE
+    LOAD_BL
+    DROP_EVERYTHING
 }
 
 if [ ! -z "$1" ]

@@ -16,7 +16,7 @@ EmergingThreats.net IP Block List,emergingthreats,free,http://rules.emergingthre
 #Http proxies,httpproxies,Squidblacklist,xafnpguypyaewkmuugbd
 #IP Ranges trying to stop filesharing-anti-p2p activity-strong financial interest in copyrighted material-government ranges-companies having strong financial interest in government #work,level1,Bluetack,ydxerpxkpcfqjaybcssw
 #General corporate ranges-Ranges used by labs or researchers and proxies,level2,Bluetack,gyisgnzbhppbvsphucsw
-All the known Microsoft ranges,microsoft,Bluetack,xshktygkujudfnjfioro
+#All the known Microsoft ranges,microsoft,Bluetack,xshktygkujudfnjfioro
 #Intended to be used by webmasters to block hostile spiders from their web sites,spiders,Bluetack,mcvxsnihddgutbjfbghy
 #Contains hijacked IPs and known IPs that are used to deliver spam,hijacked,Bluetack,usrcshglbiilevmyfhse
 #Contains known Hackers and such people in it,dshield,Bluetack,xpbqleszmajjesnzddhv
@@ -30,6 +30,7 @@ All the known Microsoft ranges,microsoft,Bluetack,xshktygkujudfnjfioro
 #Forum Spam,forumspam,Bluetack,ficutxiwawokxlcyoeye
 #IP addresses related to current web server hack and exploit attempts that have been logged by us or can be found in and cross referenced with other related IP #databases,webexploit,Bluetack,ghlzqtqxnzctvvajwwag
 #DROP,drop,Spamhaus,zbdlwrqkabxbcppvrnos
+#Bogons,bogons,Bluetack,gihxqmhyunbxhbmgqrla
 ## I-Block Lists - Organisations
 #The Onion Router,onion,I-Blocklist,togdoptykrlolpddwbvz
 #Amazon,amazon,I-Blocklist,himxdtcxttxaaxqzgogt
