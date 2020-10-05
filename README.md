@@ -12,11 +12,11 @@ https://github.com/trimstray/iptables-essentials#block-an-ip-address
 
 ## To Do
 
+* IPV6 Support
+
 * After all the ips are in ipset we can do `ipset save > all.ipset`
 * Persisting iptables rules and ipset lists on reboot
 * Rate limiting / ddos protection amulets
-* IPV6 Support
-* Whitelists and nonwhitelists (our own custom lists)
 * Better method to check our variables and stuff, exit gracefully
 * Clean up file `blocklist.de.txt` afterwards
 * IP / Port white and nonwhite listing
@@ -45,7 +45,6 @@ for i in $(whois -h whois.radb.net -- '-i origin AS32934' | grep "^route:" | cut
 
 done
 ```
-
 
 ## Prizes available to solve these things 
 
