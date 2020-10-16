@@ -4,29 +4,25 @@ https://twitch.tv/hughbord
 
 https://github.com/trimstray/iptables-essentials#block-an-ip-address
 
-## Next Stream
-
-* Check the `all.ipset` file, if it's more than 12/24 hours old we
- * Get new lists
- * Restore from `all.ipset`
-
 ## To Do
 
-* IPV6 Support
+https://www.team-cymru.org/Services/Bogons/fullbogons-ipv4.txt
+https://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
 
-* After all the ips are in ipset we can do `ipset save > all.ipset`
-* Persisting iptables rules and ipset lists on reboot
-* Rate limiting / ddos protection amulets
-* Better method to check our variables and stuff, exit gracefully
-* Clean up file `blocklist.de.txt` afterwards
+* Separate the files into a more modular fashion
+* IPV6 Support
 * IP / Port white and nonwhite listing
+* After all the ips are in ipset we can do `ipset save > all.ipset`
+  * Check the `all.ipset` file, if it's more than 12/24 hours old we
+  * Get new lists
+  * Restore from `all.ipset`
+
+* Persisting iptables rules and ipset lists on reboot (iptables-persistent)
 * Clean up the functions/scripts into their own files
-* Filter out # comments and ipv6 from the ipv4 lists
-* HINT: Cannot destroy lists when firewall is running or using them
 * DOCKER support (workaround, after running iptables restart docker)
  * Docker command or script to generate the pure docker IPTABLES rule
 
-* Check if binaries exist
+* Check if binaries exist / Better method to check our variables and stuff, exit gracefully
 
 ```
 if ! exists curl && exists egrep && exists grep && exists ipset && exists iptables && exists sed && exists sort && exists wc ; then
@@ -68,14 +64,9 @@ Few years I've developed the MAXXSUITE scripts which have some basic firewall an
 
 Refurbishing this into a new script package.
 
-# Done
-
-* CSV files for the ip lists
-* external data source for the lists and names <- already done this, csvs stuff today
-
 # For the future
 
-* Network packet capturing
+* Network packet capturing with the RPI
 * Turn wlan0 into a wi fi hot spot (already have DHCP on ETHERNET)
 
 # More cool streaming ideas for darkmage to copy
@@ -88,3 +79,7 @@ Refurbishing this into a new script package.
 
 * https://github.com/trimstray/iptables-essentials
 * https://github.com/stamparm/ipsum
+* https://github.com/firehol/blocklist-ipsets/wiki
+* https://github.com/WaterByWind/edgeos-bl-mgmt/blob/master/fw-BlackList-URLs.txt
+* https://www.spinics.net/lists/netfilter/msg17583.html
+* https://git.tcp.direct/atmos/blocklist-ipset

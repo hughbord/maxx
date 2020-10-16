@@ -1,6 +1,7 @@
 # Free Lists
 blocklist.de attackers,blocklist.de,free,http://lists.blocklist.de/lists/all.txt
 EmergingThreats.net IP Block List,emergingthreats,free,http://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt
+IPV4 Bogons,ipv4bogons,free,https://www.team-cymru.org/Services/Bogons/fullbogons-ipv4.txt
 # I-Block Lists - General (you need an account)
 #Bad pornography and pedophile sites,badporno,Squidblacklist,nndhjdnpxvydcupzaann
 #IPs of Anti-Infringement Organizations,antiinfringement,I-Blocklist,srzondksmjuwsvmgdbhi
