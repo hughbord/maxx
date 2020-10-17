@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. "FUNCTION.sh"
+. "FUNCTIONS.sh"
 
 if [ ! -z "$1" ]
 then

@@ -73,7 +73,8 @@ function IRC_FIREWALL {
     LOAD_BL
     DROP_EVERYTHING
 
-    if [ "$USE_IPV6" = "1" ]; then
+    if [ $USE_IPV6 = "1" ]; then
+        echo "GET DAT ipV6 YO!!!11"
         CLEAR6
         ALLOW_STATES6
         ALLOW_LOCALHOST6
@@ -101,6 +102,16 @@ function BASIC_PI {
     LOAD_BL
     IP_MASQ
     DROP_EVERYTHING
+    
+    if [ $USE_IPV6 = "1" ]; then
+        CLEAR6
+        ALLOW_STATES6
+        ALLOW_LOCALHOST6
+        ALLOW_PORTS6
+        #IP_MASQ6
+        DROP_EVERYTHING6
+    fi
+
     SAFETY_TIMEOUT
 }
 
@@ -113,5 +124,17 @@ function BASIC_FIREWALL {
     IPSET_SAVE_FILE
     LOAD_BL
     DROP_EVERYTHING
+
+    if [ $USE_IPV6 = "1" ]; then
+        CLEAR6
+        ALLOW_STATES6
+        ALLOW_LOCALHOST6
+        ALLOW_PORTS6
+        DL_ALL_LISTS6
+        IPSET_SAVE_FILE6
+        LOAD_BL6
+        DROP_EVERYTHING6
+    fi
+
     SAFETY_TIMEOUT
 }

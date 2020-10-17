@@ -41,17 +41,9 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
             
             if [[ "$fauthor" == "free" ]]
             then
-                IPSET_MAKE $ffname
-                
-                if [ "$USE_IPV6" == "1" ]; then
-                    IPSET_MAKE_V6 $ffname
-                fi
-                
+                IPSET_MAKE $ffname                
                 GET_BLOCK_LIST $ffname $furl $fauthor $fdesc
                 
-                if [ "$USE_IPV6" == "1" ]; then
-                    GET_BLOCK_IP6_LIST $ffname $furl $fauthor $fdesc
-                fi
             else
                 IPSET_MAKE $ffname
                 
