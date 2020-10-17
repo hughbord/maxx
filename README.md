@@ -2,15 +2,8 @@
 
 https://twitch.tv/hughbord
 
-https://github.com/trimstray/iptables-essentials#block-an-ip-address
-
 ## To Do
 
-https://www.team-cymru.org/Services/Bogons/fullbogons-ipv4.txt
-https://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
-
-* Separate the files into a more modular fashion
-* IPV6 Support
 * IP / Port white and nonwhite listing
 * After all the ips are in ipset we can do `ipset save > all.ipset`
   * Check the `all.ipset` file, if it's more than 12/24 hours old we
@@ -83,3 +76,4 @@ Refurbishing this into a new script package.
 * https://github.com/WaterByWind/edgeos-bl-mgmt/blob/master/fw-BlackList-URLs.txt
 * https://www.spinics.net/lists/netfilter/msg17583.html
 * https://git.tcp.direct/atmos/blocklist-ipset
+* https://github.com/trimstray/iptables-essentials#block-an-ip-address

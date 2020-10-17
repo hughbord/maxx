@@ -24,7 +24,14 @@ function IPSET_RESTORE_FILE {
 
 BL_NAMES=()
 
-function DL_ALL_LISTS { # Download all free and paid lists (will split this later)
+function DL_ALL_LISTS { # Download all free and paid lists (will split this later)  
+    # echo $(( (`date +%s` - `stat -L --format %Y all.ipset `) > (60 * 60 * $LIST_CACHING_HOURS) )) 
+      
+    # if [ "$LIST_TIME_EXPIRY" = "0" ]; then
+    #     echo -en "\n * Yo I aint gotta get dese new lists yo, \n"
+    #     return 0
+    # fi
+
     echo -en "\n * Downloading lists...\n"
     
     while read fdesc ffname fauthor furl
@@ -41,16 +48,12 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
             
             if [[ "$fauthor" == "free" ]]
             then
-                IPSET_MAKE $ffname                
+                IPSET_MAKE $ffname
                 GET_BLOCK_LIST $ffname $furl $fauthor $fdesc
                 
             else
                 IPSET_MAKE $ffname
-                
-                if [ "$USE_IPV6" == "1" ]; then
-                    IPSET_MAKE_V6 $ffname
-                fi
-                
+
                 GET_IP_BLOCKLIST $ffname $furl $fauthor $fdesc
             fi
         fi

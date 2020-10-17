@@ -13,11 +13,11 @@ function GET_BLOCK_LIST6 { # Downloads iblocklist.com nonwhitelist (you need an 
 # Look into what IPv6 blocklist.com has and add it here
 
 function IPSET_SAVE_FILE6 {
-    $IPSET_BIN save > "$IPLISTALL6"
+    $IPSET_BIN save > "$IPLISTALL"
 }
 
 function IPSET_RESTORE_FILE6 {
-    $IPSET_BIN restore < "$IPLISTALL6"
+    $IPSET_BIN restore < "$IPLISTALL"
 }
 
 BL_NAMES6=()
