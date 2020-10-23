@@ -13,16 +13,23 @@ function GET_BLOCK_LIST6 { # Downloads iblocklist.com nonwhitelist (you need an 
 # Look into what IPv6 blocklist.com has and add it here
 
 function IPSET_SAVE_FILE6 {
-    $IPSET_BIN save > "$IPLISTALL"
+    $IPSET_BIN save > "$IPLISTALL6"
 }
 
 function IPSET_RESTORE_FILE6 {
-    $IPSET_BIN restore < "$IPLISTALL"
+    $IPSET_BIN restore < "$IPLISTALL6"
 }
 
 BL_NAMES6=()
 
 function DL_ALL_LISTS6 { # Download all free and paid lists (will split this later)
+    if [ -f "$IPLISTALL6" ]; then     
+        if (( $(stat --format='%Y' "$IPLISTALL6") > ( $(date +%s) - (60 * 60 * LIST_CACHING_HOURS) ) )); then 
+            echo " * The list is good bro."
+            return 0
+        fi
+    fi
+
     echo -en "\n * Downloading lists...\n"
     
     while read fdesc ffname fauthor furl
@@ -35,12 +42,16 @@ function DL_ALL_LISTS6 { # Download all free and paid lists (will split this lat
             echo -ne " * Saving $ffname...\n"
             
             # Make ipset name array here
-            BL_NAMES6+=("$ffname")
+            BL_NAMES+=("$ffname")
             
             if [[ "$fauthor" == "free" ]]
             then
-                IPSET_MAKE6 $ffname
-                GET_BLOCK_LIST6 $ffname $furl $fauthor $fdesc
+                IPSET_MAKE $ffname
+                GET_BLOCK_LIST $ffname $furl $fauthor $fdesc
+                
+            else
+                IPSET_MAKE $ffname
+                GET_IP_BLOCKLIST $ffname $furl $fauthor $fdesc
             fi
         fi
         

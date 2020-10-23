@@ -15,22 +15,22 @@ function GET_IP_BLOCKLIST {
 }
 
 function IPSET_SAVE_FILE {
-    $IPSET_BIN save > "$IPLISTALL"
+    $IPSET_BIN save > "$IPLISTALL4"
 }
 
 function IPSET_RESTORE_FILE {
-    $IPSET_BIN restore < "$IPLISTALL"
+    $IPSET_BIN restore < "$IPLISTALL4"
 }
 
 BL_NAMES=()
 
-function DL_ALL_LISTS { # Download all free and paid lists (will split this later)  
-    # echo $(( (`date +%s` - `stat -L --format %Y all.ipset `) > (60 * 60 * $LIST_CACHING_HOURS) )) 
-      
-    # if [ "$LIST_TIME_EXPIRY" = "0" ]; then
-    #     echo -en "\n * Yo I aint gotta get dese new lists yo, \n"
-    #     return 0
-    # fi
+function DL_ALL_LISTS { # Download all free and paid lists (will split this later)
+    if [ -f "$IPLISTALL4" ]; then     
+        if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (60 * 60 * LIST_CACHING_HOURS) ) )); then 
+            echo " * The list is good bro."
+            return 0
+        fi
+    fi
 
     echo -en "\n * Downloading lists...\n"
     
@@ -53,7 +53,6 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
                 
             else
                 IPSET_MAKE $ffname
-
                 GET_IP_BLOCKLIST $ffname $furl $fauthor $fdesc
             fi
         fi

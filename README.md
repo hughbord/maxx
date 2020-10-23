@@ -5,10 +5,7 @@ https://twitch.tv/hughbord
 ## To Do
 
 * IP / Port white and nonwhite listing
-* After all the ips are in ipset we can do `ipset save > all.ipset`
-  * Check the `all.ipset` file, if it's more than 12/24 hours old we
-  * Get new lists
-  * Restore from `all.ipset`
+* Check if the list caching is good for v6 and v4
 
 * Persisting iptables rules and ipset lists on reboot (iptables-persistent)
 * Clean up the functions/scripts into their own files
@@ -77,3 +74,5 @@ Refurbishing this into a new script package.
 * https://www.spinics.net/lists/netfilter/msg17583.html
 * https://git.tcp.direct/atmos/blocklist-ipset
 * https://github.com/trimstray/iptables-essentials#block-an-ip-address
+
+
