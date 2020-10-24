@@ -8,11 +8,9 @@ https://twitch.tv/hughbord
 * Check if the list caching is good for v6 and v4
 
 * Persisting iptables rules and ipset lists on reboot (iptables-persistent)
-* Clean up the functions/scripts into their own files
+
 * DOCKER support (workaround, after running iptables restart docker)
  * Docker command or script to generate the pure docker IPTABLES rule
-
-* Check if binaries exist / Better method to check our variables and stuff, exit gracefully
 
 ```
 if ! exists curl && exists egrep && exists grep && exists ipset && exists iptables && exists sed && exists sort && exists wc ; then

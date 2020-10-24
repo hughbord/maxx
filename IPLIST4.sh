@@ -26,8 +26,10 @@ BL_NAMES=()
 
 function DL_ALL_LISTS { # Download all free and paid lists (will split this later)
     if [ -f "$IPLISTALL4" ]; then     
-        if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (60 * 60 * LIST_CACHING_HOURS) ) )); then 
+        if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (LIST_CACHING_HOURS) ) )); then 
             echo " * The list is good bro."
+            $IPSET_BIN destroy
+            IPSET_RESTORE_FILE
             return 0
         fi
     fi

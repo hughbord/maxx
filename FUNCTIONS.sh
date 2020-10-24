@@ -9,10 +9,42 @@ if [ ! -f ".env" ]; then
 fi
 
 . ".env"
+
+if [ ! -x "$IPTABLES_BIN" ]; then
+    echo "Could not find executable $IPTABLES_BIN, sort that shit out bro."
+fi
+
+if [ $USE_IPV6 = "1" ]; then
+    if [ ! -x "$IP6TABLES_BIN" ]; then
+        echo "Could not find executable $IP6TABLES_BIN, sort that shit out bro."
+    fi
+fi
+
+if [ ! -x "$IPSET_BIN" ]; then
+    echo "Could not find executable $IPSET_BIN, sort that shit out bro."
+fi
+
+# if [ ! -f "$TMP_DIR" ]; then
+#     echo "Could not find path $TMP_DIR, sort that shit out bro."
+# fi
+
+if [ ! -f "$IPLISTSCSV" ]; then
+    echo "Could not find file $IPLISTSCSV, sort that shit out bro."
+fi
+
+if [ $USE_IPV6 = "1" ]; then
+    if [ ! -f "$IPLISTSCSV6" ]; then
+        echo "Could not find file $IPLISTSCSV6, sort that shit out bro."
+    fi
+fi
+
 . "FIREWALL4.sh"
-. "FIREWALL6.sh"
 . "IPLIST4.sh"
-. "IPLIST6.sh"
+
+if [ $USE_IPV6 = "1" ]; then
+    . "FIREWALL6.sh"
+    . "IPLIST6.sh"
+fi
 
 if [ "$IPBLUSER" = "" ]; then
     echo "Please ensure you have a IPBLUSER set in .env, you dumb fuck."
@@ -23,8 +55,6 @@ if [ "$IPBLPIN" = "" ]; then
     echo "Please ensure you have a IPBLPIN set in .env, you dumb fuck."
     exit 1
 fi
-
-
 
 # function SHOW_ALL_HELP { # Show all the help for all the things
 #     for i in "${MAXXMODULES[@]}"
@@ -60,7 +90,6 @@ function SAFETY_TIMEOUT {
 
 # PRECONFIGURED FIREWALLS FOR FREE
 
-
 function IRC_FIREWALL {
     CLEAR
     ALLOW_STATES
@@ -74,7 +103,7 @@ function IRC_FIREWALL {
     DL_ALL_LISTS
     LOAD_BL
     DROP_EVERYTHING
-
+    
     if [ $USE_IPV6 = "1" ]; then
         echo "GET DAT ipV6 YO!!!11"
         CLEAR6
@@ -83,14 +112,14 @@ function IRC_FIREWALL {
         ALLOW_PORTS6
         BLOCK_BOGUS_TCP_FLAGS6
         PORTSCAN_PROTECT6
-
+        
         ICMP_BLOCK6 $ETH
         IPSET_SAVE_FILE6
         DL_ALL_LISTS6
         LOAD_BL6
         DROP_EVERYTHING6
     fi
-
+    
     SAFETY_TIMEOUT
 }
 
@@ -113,7 +142,7 @@ function BASIC_PI {
         #IP_MASQ6
         DROP_EVERYTHING6
     fi
-
+    
     SAFETY_TIMEOUT
 }
 
@@ -126,7 +155,7 @@ function BASIC_FIREWALL {
     IPSET_SAVE_FILE
     LOAD_BL
     DROP_EVERYTHING
-
+    
     if [ $USE_IPV6 = "1" ]; then
         CLEAR6
         ALLOW_STATES6
@@ -137,6 +166,6 @@ function BASIC_FIREWALL {
         LOAD_BL6
         DROP_EVERYTHING6
     fi
-
+    
     SAFETY_TIMEOUT
 }

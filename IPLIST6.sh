@@ -26,6 +26,9 @@ function DL_ALL_LISTS6 { # Download all free and paid lists (will split this lat
     if [ -f "$IPLISTALL6" ]; then     
         if (( $(stat --format='%Y' "$IPLISTALL6") > ( $(date +%s) - (60 * 60 * LIST_CACHING_HOURS) ) )); then 
             echo " * The list is good bro."
+            echo " * The list is good bro."
+            $IPSET_BIN destroy
+            IPSET_RESTORE_FILE6
             return 0
         fi
     fi
