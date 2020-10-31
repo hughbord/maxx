@@ -5,21 +5,41 @@ https://twitch.tv/hughbord
 ## To Do
 
 * IP / Port white and nonwhite listing
-* Check if the list caching is good for v6 and v4
-
-* Persisting iptables rules and ipset lists on reboot (iptables-persistent)
+* COLOURS / ANSI / ASCII
 
 * DOCKER support (workaround, after running iptables restart docker)
  * Docker command or script to generate the pure docker IPTABLES rule
 
+* Yo check this out more later (Get ips range from a domain name)
+
+## Systemd Unit file for Startup
+
 ```
-if ! exists curl && exists egrep && exists grep && exists ipset && exists iptables && exists sed && exists sort && exists wc ; then
-  echo >&2 "Error: searching PATH fails to find executables among: curl egrep grep ipset iptables sed sort wc"
-  exit 1
-fi
+[Unit]
+Description = Apply my IPv4 Iptables Rules
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/usr/sbin/ipset restore < /home/ubuntu/maxx/all4.ipset && /sbin/iptables-restore < /etc/iptables.ipv4"
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-* Yo check this out more later (Get ips range from a domain name)
+* Save file to `/etc/systemd/system/maxx-persist.service`
+* Run `sudo systemctl enable maxx-persist`
+
+## Crontab for startup
+
+```
+@reboot root /home/ubuntu/maxx/MAXX.sh BASIC_FIREWALL
+```
+
+Note: untested. 
+
+#### Get IPS range from domain
+
 
 ```
 whois -h v4.whois.cymru.com " -v $(host facebook.com | grep "has address" | cut -d " " -f4)" | tail -n1 | awk '{print $1}'

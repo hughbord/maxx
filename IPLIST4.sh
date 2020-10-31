@@ -24,12 +24,31 @@ function IPSET_RESTORE_FILE {
 
 BL_NAMES=()
 
-function DL_ALL_LISTS { # Download all free and paid lists (will split this later)
+function DL_ALL_LISTS { # Download all free and paid lists (will split this later)   
+    while read fdesc ffname fauthor furl
+    do #	     4     1      3      2
+        
+        if [[ ! "$fdesc" == *"#"* ]] # If the first char is #, we will skip that list. Can comment out down or undesired lists
+        then
+            # Make ipset name array here
+            BL_NAMES+=("$ffname")
+        fi
+
+    done < "$IPLISTSCSV"
+    IFS=$OLDIFS
+    
+    # Reset script variables
+    COUNTER=0
+    J=0
+    OLDIFS=$IFS
+    IFS=,
+
     if [ -f "$IPLISTALL4" ]; then     
-        if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (LIST_CACHING_HOURS) ) )); then 
-            echo " * The list is good bro."
+        if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (LIST_CACHING_HOURS * 60 * 60) ) )); then 
+            echo -ne "\n * The list is good bro."
             $IPSET_BIN destroy
             IPSET_RESTORE_FILE
+            
             return 0
         fi
     fi
@@ -44,9 +63,6 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
             echo "" > /dev/null
         else
             echo -ne " * Saving $ffname...\n"
-            
-            # Make ipset name array here
-            BL_NAMES+=("$ffname")
             
             if [[ "$fauthor" == "free" ]]
             then
@@ -70,10 +86,10 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
 }
 
 function LOAD_BL { # Restores nonwhitelist into the firewall
-    echo " * Loading nonwhitelist..."
+    echo -ne "\n * Loading nonwhitelist..."
     for i in "${BL_NAMES[@]}"
     do
-        echo -ne "\t * Restoring nonwhitelist $i..."
+        echo -ne "\n\t * Restoring nonwhitelist $i..."
         $IPTABLES_BIN -A INPUT -m set --match-set "$i" src -j LOG --log-prefix "$i-bl-in: " --log-level 7
         $IPTABLES_BIN -A INPUT -m set --match-set "$i" src -j DROP
         

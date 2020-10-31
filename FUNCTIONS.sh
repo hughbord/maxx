@@ -10,33 +10,31 @@ fi
 
 . ".env"
 
-if [ ! -x "$IPTABLES_BIN" ]; then
-    echo "Could not find executable $IPTABLES_BIN, sort that shit out bro."
-fi
-
 if [ $USE_IPV6 = "1" ]; then
-    if [ ! -x "$IP6TABLES_BIN" ]; then
-        echo "Could not find executable $IP6TABLES_BIN, sort that shit out bro."
+    BIN_ARRAY=("$IPTABLES_BIN" "$IPSET_BIN" "$IP6TABLES_BIN" "$IPTABLES_SAVE" )
+    FILE_ARRAY=("$IPLISTSCSV" "$IPLISTSCSV6")
+else
+    BIN_ARRAY=("$IPTABLES_BIN" "$IPSET_BIN" "$IPTABLES_SAVE" )
+    FILE_ARRAY=("$IPLISTSCSV")  
+fi
+
+for i in "${BIN_ARRAY[@]}"
+do
+    if [ ! -x "$i" ]; then
+        echo "Could not find executable $i, sort that shit out bro."
+
+        exit 1;
     fi
-fi
+done
 
-if [ ! -x "$IPSET_BIN" ]; then
-    echo "Could not find executable $IPSET_BIN, sort that shit out bro."
-fi
+for i in "${FILE_ARRAY[@]}"
+do
+    if [ ! -f "$i" ]; then
+        echo "Could not find file $i, sort that shit out bro."
 
-# if [ ! -f "$TMP_DIR" ]; then
-#     echo "Could not find path $TMP_DIR, sort that shit out bro."
-# fi
-
-if [ ! -f "$IPLISTSCSV" ]; then
-    echo "Could not find file $IPLISTSCSV, sort that shit out bro."
-fi
-
-if [ $USE_IPV6 = "1" ]; then
-    if [ ! -f "$IPLISTSCSV6" ]; then
-        echo "Could not find file $IPLISTSCSV6, sort that shit out bro."
+        exit 1;
     fi
-fi
+done
 
 . "FIREWALL4.sh"
 . "IPLIST4.sh"
