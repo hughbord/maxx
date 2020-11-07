@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function CLEAR { # Clears firewall rules
-    echo " * Clearing IPTABLES rules..."
+    echo -e "${C_INFO} Clearing IPTABLES rules..."
     $IPTABLES_BIN -F
     $IPTABLES_BIN -X
     $IPTABLES_BIN -Z
@@ -12,25 +12,25 @@ function CLEAR { # Clears firewall rules
 }
 
 function ALLOW_PORTS { # Cycle through devices and allow in and out ports, with rate limiting
-    echo  -ne " * Allowing TCP IN eth0: "
+    echo  -ne "${C_INFO} Allowing TCP IN eth0: "
     for port in $TCPPORTSIN; do
         echo -ne " $port"
         $IPTABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing TCP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing TCP OUT eth0: "
     for port in $TCPPORTSOUT; do
         echo -ne " $port"
         $IPTABLES_BIN -A OUTPUT -p tcp --sport $port  -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing UDP IN eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP IN eth0: "
     for port in $UPDPORTSIN; do
         echo -ne " $port"
         $IPTABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing UDP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP OUT eth0: "
     for port in $UPDPORTSOUT; do
         echo -ne " $port"
         $IPTABLES_BIN -A OUTPUT -p udp --sport $port -j ACCEPT
@@ -38,14 +38,14 @@ function ALLOW_PORTS { # Cycle through devices and allow in and out ports, with 
 }
 
 function ALLOW_IPS { # IPV4 Only
-    echo  -ne "\n * Allowing IPS TCP: "
+    echo  -ne "\n${C_INFO} Allowing IPS TCP: "
     
     for port in $TCPPIPSIN; do
         echo -ne " $port"
         $IPTABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing IPS UDP: "
+    echo  -ne "\n${C_INFO} Allowing IPS UDP: "
     for port in $UPDIPSIN; do
         echo -ne " $port"
         $IPTABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
@@ -54,7 +54,7 @@ function ALLOW_IPS { # IPV4 Only
 
 
 function ALLOW_LOCALHOST { # Allow localhost for firewall
-    echo " * Allowing Localhost..."
+    echo -e "${C_INFO} Allowing Localhost..."
     $IPTABLES_BIN -A INPUT -i lo -j ACCEPT
     $IPTABLES_BIN -A OUTPUT -o lo -j ACCEPT
 }
@@ -66,7 +66,7 @@ function ALLOW_STATES { # Allow states
 }
 
 function DROP_EVERYTHING { # Drop all remaining traffic that doesn't fit with the rules
-    echo -ne "\n * Dropping everything else on TCP and UDP...\n"
+    echo -ne "${C_INFO} Dropping everything else on TCP and UDP...\n"
     #$IPTABLES_BIN -A INPUT -p udp -j LOG --log-prefix "fw-bl-udp-drop: " --log-level 7
     $IPTABLES_BIN -A INPUT -p udp -j DROP
     

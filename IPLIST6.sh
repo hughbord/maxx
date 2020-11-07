@@ -2,7 +2,7 @@
 
 function IPSET_MAKE6 { # Makes a new IPSET list IPV6.
     $IPSET_BIN -q create "$1-ip6" hash:net family inet6 hashsize 65536 maxelem 1048576 && \
-    echo -ne "\t * Created $1-ip6 IPSet...\n" || $IPSET_BIN -q flush "$1-ip6"
+    echo -ne "\t{$C_INFO} Created $1-ip6 IPSet...\n" || $IPSET_BIN -q flush "$1-ip6"
 }
 
 # Get IP Blocklist IPV6 List
@@ -25,15 +25,14 @@ BL_NAMES6=()
 function DL_ALL_LISTS6 { # Download all free and paid lists (will split this later)
     if [ -f "$IPLISTALL6" ]; then     
         if (( $(stat --format='%Y' "$IPLISTALL6") > ( $(date +%s) - (60 * 60 * LIST_CACHING_HOURS) ) )); then 
-            echo " * The list is good bro."
-            echo " * The list is good bro."
+            echo -e "{$C_INFO} The list is good bro."
             $IPSET_BIN destroy
             IPSET_RESTORE_FILE6
             return 0
         fi
     fi
 
-    echo -en "\n * Downloading lists...\n"
+    echo -en "\n{$C_INFO} Downloading lists...\n"
     
     while read fdesc ffname fauthor furl
     do #	     4     1      3      2
@@ -42,7 +41,7 @@ function DL_ALL_LISTS6 { # Download all free and paid lists (will split this lat
         then
             echo "" > /dev/null
         else
-            echo -ne " * Saving $ffname...\n"
+            echo -ne "{$C_INFO} Saving $ffname...\n"
             
             # Make ipset name array here
             BL_NAMES+=("$ffname")
@@ -69,10 +68,10 @@ function DL_ALL_LISTS6 { # Download all free and paid lists (will split this lat
 }
 
 function LOAD_BL6 { # Restores nonwhitelist into the firewall
-    echo " * Loading IPV6 nonwhitelist..."
+    echo "{$C_INFO} Loading IPV6 nonwhitelist..."
     for i in "${BL_NAMES6[@]}"
     do
-        echo -ne "\t * Restoring nonwhitelist $i-ip6..."
+        echo -ne "\t{$C_INFO} Restoring nonwhitelist $i-ip6... "
         $IP6TABLES_BIN -A INPUT -m set --match-set "$i-ip6" src -j LOG --log-prefix "$i-ip6-bl-in: " --log-level 7
         $IP6TABLES_BIN -A INPUT -m set --match-set "$i-ip6" src -j DROP
         
@@ -85,6 +84,6 @@ function LOAD_BL6 { # Restores nonwhitelist into the firewall
         $IP6TABLES_BIN -A FORWARD -m set --match-set "$i-ip6" src -j LOG --log-prefix "$i-ip6-bl-fwd-in: " --log-level 7
         $IP6TABLES_BIN -A FORWARD -m set --match-set "$i-ip6" src -j DROP
         
-        echo -ne " restored.\n"
+        echo -e "{$C_SUCCESS}"
     done
 }

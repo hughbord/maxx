@@ -4,8 +4,8 @@ https://twitch.tv/hughbord
 
 ## To Do
 
-* IP / Port white and nonwhite listing
 * COLOURS / ANSI / ASCII
+* IP / Port white and nonwhite listing
 
 * DOCKER support (workaround, after running iptables restart docker)
  * Docker command or script to generate the pure docker IPTABLES rule
@@ -92,5 +92,6 @@ Refurbishing this into a new script package.
 * https://www.spinics.net/lists/netfilter/msg17583.html
 * https://git.tcp.direct/atmos/blocklist-ipset
 * https://github.com/trimstray/iptables-essentials#block-an-ip-address
-
-
+* https://github.com/messutied/colors.sh
+* https://www.cyberciti.biz/faq/unix-linux-bash-script-check-if-variable-is-empty/
+* https://github.com/tat3r

@@ -4,7 +4,7 @@
 set -euf -o pipefail
 
 if [ ! -f ".env" ]; then
-    echo "Please setup your .env file by typing cp .env.example .env && nano .env, you dumb fuck."
+    echo -e "${C_ERROR} Please setup your .env file by typing cp .env.example .env && nano .env, ${F_BOLD}you dumb fuck.${NO_FORMAT}"
     exit 1
 fi
 
@@ -21,7 +21,7 @@ fi
 for i in "${BIN_ARRAY[@]}"
 do
     if [ ! -x "$i" ]; then
-        echo "Could not find executable $i, sort that shit out bro."
+        echo -e "${C_ERROR} Could not find executable $i, ${F_BOLD}sort that shit out bro.${NO_FORMAT}"
 
         exit 1;
     fi
@@ -30,7 +30,7 @@ done
 for i in "${FILE_ARRAY[@]}"
 do
     if [ ! -f "$i" ]; then
-        echo "Could not find file $i, sort that shit out bro."
+        echo -e "${C_ERROR} Could not find file $i, ${F_BOLD}sort that shit out bro.${NO_FORMAT}"
 
         exit 1;
     fi
@@ -45,12 +45,12 @@ if [ $USE_IPV6 = "1" ]; then
 fi
 
 if [ "$IPBLUSER" = "" ]; then
-    echo "Please ensure you have a IPBLUSER set in .env, you dumb fuck."
+    echo -e "${C_ERROR} Please ensure you have a IPBLUSER set in .env, ${F_BOLD}you dumb fuck.${NO_FORMAT}"
     exit 1
 fi
 
 if [ "$IPBLPIN" = "" ]; then
-    echo "Please ensure you have a IPBLPIN set in .env, you dumb fuck."
+    echo -e "${C_ERROR} Please ensure you have a IPBLPIN set in .env, ${F_BOLD}you dumb fuck.${NO_FORMAT}"
     exit 1
 fi
 
@@ -81,8 +81,8 @@ fi
 
 
 function SAFETY_TIMEOUT {
-    echo
-    read -t $SAFETY_TIMEOUT_SECONDS -p "Press any key within $SAFETY_TIMEOUT_SECONDS seconds to confirm that you still have connectivity... " || CLEAR
+    echo -e "${C_INFO} ${C_YELLOW}Press any key within $SAFETY_TIMEOUT_SECONDS seconds to confirm that you still have connectivity...${NO_FORMAT}"
+    read -t $SAFETY_TIMEOUT_SECONDS -p "" || CLEAR
 }
 
 
@@ -103,7 +103,6 @@ function IRC_FIREWALL {
     DROP_EVERYTHING
     
     if [ $USE_IPV6 = "1" ]; then
-        echo "GET DAT ipV6 YO!!!11"
         CLEAR6
         ALLOW_STATES6
         ALLOW_LOCALHOST6

@@ -2,9 +2,10 @@
 
 . "FUNCTIONS.sh"
 
-if [ ! -z "$1" ]
+if  [ $# -eq 0 ]
 then
-    $1
+    echo -e "${C_ERROR} Yo bro you gotta put an argument ${F_BOLD}LOL${NO_FORMAT}."
+    exit
 else
-    echo "Yo bro you gotta put an argument LOL."
+    $1
 fi

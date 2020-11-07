@@ -2,7 +2,7 @@
 
 function IPSET_MAKE { # Makes a new IPSET list.
     $IPSET_BIN -q create "$1" hash:net family inet hashsize 65536 maxelem 1048576 && \
-    echo -ne "\t * Created $1 IPSet...\n" || $IPSET_BIN -q flush "$1"
+    echo -ne "\t ${C_SUCCESS} Created $1 IPSet...\n" || $IPSET_BIN -q flush "$1"
 }
 
 # Get IP Blocklist IPV4 List
@@ -36,7 +36,7 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
 
     done < "$IPLISTSCSV"
     IFS=$OLDIFS
-    
+     
     # Reset script variables
     COUNTER=0
     J=0
@@ -45,7 +45,7 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
 
     if [ -f "$IPLISTALL4" ]; then     
         if (( $(stat --format='%Y' "$IPLISTALL4") > ( $(date +%s) - (LIST_CACHING_HOURS * 60 * 60) ) )); then 
-            echo -ne "\n * The list is good bro."
+            echo -ne "\n${C_SUCCESS} The list is good bro."
             $IPSET_BIN destroy
             IPSET_RESTORE_FILE
             
@@ -53,7 +53,7 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
         fi
     fi
 
-    echo -en "\n * Downloading lists...\n"
+    echo -en "\n${C_INFO} Downloading lists...\n"
     
     while read fdesc ffname fauthor furl
     do #	     4     1      3      2
@@ -62,16 +62,18 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
         then
             echo "" > /dev/null
         else
-            echo -ne " * Saving $ffname...\n"
+            echo -ne "${C_INFO} Saving $ffname... "
             
             if [[ "$fauthor" == "free" ]]
             then
                 IPSET_MAKE $ffname
                 GET_BLOCK_LIST $ffname $furl $fauthor $fdesc
+                echo -ne "${C_SUCCESS}"
                 
             else
                 IPSET_MAKE $ffname
                 GET_IP_BLOCKLIST $ffname $furl $fauthor $fdesc
+                echo -ne "${C_SUCCESS}"
             fi
         fi
         
@@ -86,10 +88,10 @@ function DL_ALL_LISTS { # Download all free and paid lists (will split this late
 }
 
 function LOAD_BL { # Restores nonwhitelist into the firewall
-    echo -ne "\n * Loading nonwhitelist..."
+    echo -ne "\n${C_INFO} Loading nonwhitelist..."
     for i in "${BL_NAMES[@]}"
     do
-        echo -ne "\n\t * Restoring nonwhitelist $i..."
+        echo -ne "\n${C_INFO} Restoring nonwhitelist $i..."
         $IPTABLES_BIN -A INPUT -m set --match-set "$i" src -j LOG --log-prefix "$i-bl-in: " --log-level 7
         $IPTABLES_BIN -A INPUT -m set --match-set "$i" src -j DROP
         
@@ -102,6 +104,6 @@ function LOAD_BL { # Restores nonwhitelist into the firewall
         $IPTABLES_BIN -A FORWARD -m set --match-set "$i" src -j LOG --log-prefix "$i-bl-fwd-in: " --log-level 7
         $IPTABLES_BIN -A FORWARD -m set --match-set "$i" src -j DROP
         
-        echo -ne " restored.\n"
+        echo -ne " restored. ${C_SUCCESS}\n"
     done
 }
