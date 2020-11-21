@@ -11,47 +11,54 @@ function CLEAR { # Clears firewall rules
     $IPTABLES_BIN -t mangle -X
 }
 
-function ALLOW_PORTS { # Cycle through devices and allow in and out ports, with rate limiting
-    echo  -ne "${C_INFO} Allowing TCP IN eth0: "
+function ALLOW_PORTS { # Cycle through devices and allow in and out ports for any IP address
+    echo  -ne "${C_INFO} Allowing TCP IN all interfaces: "
     for port in $TCPPORTSIN; do
         echo -ne " $port"
-        $IPTABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
+        # $IPTABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
+        $IPTABLES_BIN -A INPUT -p tcp --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n${C_INFO} Allowing TCP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing TCP OUT all interfaces: "
     for port in $TCPPORTSOUT; do
         echo -ne " $port"
-        $IPTABLES_BIN -A OUTPUT -p tcp --sport $port  -j ACCEPT
+        # $IPTABLES_BIN -A OUTPUT -p tcp --sport $port  -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p tcp --sport $port -m conntrack --ctstate ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n${C_INFO} Allowing UDP IN eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP IN all interfaces: "
     for port in $UPDPORTSIN; do
         echo -ne " $port"
-        $IPTABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
+        # $IPTABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
+        $IPTABLES_BIN -A INPUT -p udp --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n${C_INFO} Allowing UDP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP OUT all interfaces: "
     for port in $UPDPORTSOUT; do
         echo -ne " $port"
-        $IPTABLES_BIN -A OUTPUT -p udp --sport $port -j ACCEPT
+        # $IPTABLES_BIN -A OUTPUT -p udp --sport $port -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p udp --sport $port -m conntrack --ctstate ESTABLISHED -j ACCEPT
     done
 }
 
-function ALLOW_IPS { # IPV4 Only
+function ALLOW_PORTS_IPS_TCP { # ALLOW_PORTS_IPS_TCP 7000
     echo  -ne "\n${C_INFO} Allowing IPS TCP: "
     
-    for port in $TCPPIPSIN; do
-        echo -ne " $port"
-        $IPTABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
-    done
-    
-    echo  -ne "\n${C_INFO} Allowing IPS UDP: "
-    for port in $UPDIPSIN; do
-        echo -ne " $port"
-        $IPTABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
+    for ipaddress in $TCPPIPSIN; do
+        echo -ne " $ipaddress $1"
+        $IPTABLES_BIN -A INPUT -p tcp -s "$ipaddress" --dport "$1" -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p tcp --sport "$1" -m conntrack --ctstate ESTABLISHED -j ACCEPT
     done
 }
 
+function ALLOW_PORTS_IPS_UDP { # IPV4 Only
+    echo  -ne "\n${C_INFO} Allowing IPS UDP: "
+    for ipaddress in $UPDIPSIN; do
+        echo -ne " $ipaddress $1"
+        $IPTABLES_BIN -A INPUT -p udp -s "$ipaddress" --dport "$1" -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p udp --sport "$1" -m conntrack --ctstate ESTABLISHED -j ACCEPT
+    done
+}
 
 function ALLOW_LOCALHOST { # Allow localhost for firewall
     echo -e "${C_INFO} Allowing Localhost..."
@@ -75,9 +82,9 @@ function DROP_EVERYTHING { # Drop all remaining traffic that doesn't fit with th
 }
 
 function IP_MASQ {
-    $IPTABLES_BIN -t nat -A POSTROUTING -o tun0 -j MASQUERADE
-    $IPTABLES_BIN -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-    $IPTABLES_BIN -A FORWARD -i eth0 -o tun0 -j ACCEPT
+    $IPTABLES_BIN -t nat -A POSTROUTING -o "${TUN}" -j MASQUERADE
+    $IPTABLES_BIN -A FORWARD -i "${TUN}" -o "${ETH}" -m state --state RELATED,ESTABLISHED -j ACCEPT
+    $IPTABLES_BIN -A FORWARD -i "${ETH}" -o "${TUN}" -j ACCEPT
 }
 
 function PORTSCAN_PROTECT {

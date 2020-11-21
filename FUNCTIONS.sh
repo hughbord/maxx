@@ -39,9 +39,12 @@ done
 . "FIREWALL4.sh"
 . "IPLIST4.sh"
 
+SCRIPT_NAMES=("FIREWALL4.sh" "IPLIST4.sh")
+
 if [ $USE_IPV6 = "1" ]; then
     . "FIREWALL6.sh"
     . "IPLIST6.sh"
+    SCRIPT_NAMES+=("FIREWALL6.sh" "IPLIST6.sh")
 fi
 
 if [ "$IPBLUSER" = "" ]; then
@@ -54,16 +57,13 @@ if [ "$IPBLPIN" = "" ]; then
     exit 1
 fi
 
-# function SHOW_ALL_HELP { # Show all the help for all the things
-#     for i in "${MAXXMODULES[@]}"
-#     do
-#         if [ $i != 'HELP' ]
-#         then
-#             echo -ne " * $i \n"
-#             cat THEMAXX/$OS/$i | grep "{ #" | sort | sed -e 's/{ #/- /g' -e 's/function /\t/g'
-#         fi
-#     done
-# }
+function SHOW_ALL_HELP { # Show all the help for all the things
+    for i in "${SCRIPT_NAMES[@]}"
+    do
+            echo -ne " * $i \n"
+            cat "$i" | grep "{ #" | sort | sed -e 's/{ #/- /g' -e 's/function /\t/g'
+    done
+}
 
 # function CHECKIPBLCREDS {
 #     if [ "$IPBLUSER" = "" ]; then
@@ -85,6 +85,10 @@ function SAFETY_TIMEOUT {
     read -t $SAFETY_TIMEOUT_SECONDS -p "" || CLEAR
 }
 
+function SHOW_HEADER {
+    cat "${ANSI_HEADER}"
+}
+
 
 # PRECONFIGURED FIREWALLS FOR FREE
 
@@ -93,6 +97,7 @@ function IRC_FIREWALL {
     ALLOW_STATES
     ALLOW_LOCALHOST
     ALLOW_PORTS
+    #ALLOW_PORTS_IPS_TCP 7000
     BLOCK_BOGUS_TCP_FLAGS
     PORTSCAN_PROTECT
     BLOCK_BOGONS
@@ -148,6 +153,7 @@ function BASIC_FIREWALL {
     ALLOW_STATES
     ALLOW_LOCALHOST
     ALLOW_PORTS
+    ALLOW_PORTS_IPS_TCP 7771
     DL_ALL_LISTS
     IPSET_SAVE_FILE
     LOAD_BL
@@ -158,6 +164,7 @@ function BASIC_FIREWALL {
         ALLOW_STATES6
         ALLOW_LOCALHOST6
         ALLOW_PORTS6
+        ALLOW_PORTS_IP6S_TCP 7771
         DL_ALL_LISTS6
         IPSET_SAVE_FILE6
         LOAD_BL6

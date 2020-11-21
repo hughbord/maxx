@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function CLEAR6 { # Clears firewall6 rules
-    echo " * Clearing IP6TABLES rules..."
+    echo -e "${C_INFO} Clearing IP6TABLES rules..."
     $IP6TABLES_BIN -F
     $IP6TABLES_BIN -X
     $IP6TABLES_BIN -Z
@@ -11,38 +11,53 @@ function CLEAR6 { # Clears firewall6 rules
     $IP6TABLES_BIN -t mangle -X
 }
 
-function ALLOW_PORTS6 { # Cycle through devices and allow in and out ports, with rate limiting
-    echo  -ne " * Allowing TCP IN eth0: "
+function ALLOW_PORTS6 { # Cycle through devices and allow in and out ports for any IP address
+    echo  -ne "${C_INFO} Allowing TCP IN all interfaces: "
     for port in $TCPPORTSIN; do
         echo -ne " $port"
-        $IP6TABLES_BIN -A INPUT -p tcp --dport $port  -j ACCEPT
+        $IPTABLES_BIN -A INPUT -p tcp --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing TCP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing TCP OUT all interfaces: "
     for port in $TCPPORTSOUT; do
         echo -ne " $port"
-        $IP6TABLES_BIN -A OUTPUT -p tcp --sport $port  -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p tcp --sport $port -m conntrack --ctstate ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing UDP IN eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP IN all interfaces: "
     for port in $UPDPORTSIN; do
         echo -ne " $port"
-        $IP6TABLES_BIN -A INPUT -p udp --dport $port -j ACCEPT
+        $IPTABLES_BIN -A INPUT -p udp --dport $port -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
     done
     
-    echo  -ne "\n * Allowing UDP OUT eth0: "
+    echo  -ne "\n${C_INFO} Allowing UDP OUT all interfaces: "
     for port in $UPDPORTSOUT; do
         echo -ne " $port"
-        $IP6TABLES_BIN -A OUTPUT -p udp --sport $port -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p udp --sport $port -m conntrack --ctstate ESTABLISHED -j ACCEPT
     done
 }
 
-function ALLOW_IPS6 {
-    echo "ALLOW_IPS6"
+function ALLOW_PORTS_IP6S_TCP { # ALLOW_PORTS_IP6S_TCP 7000
+    echo  -ne "\n${C_INFO} Allowing IPS TCP: "
+    
+    for ipaddress in $TCPPIP6SIN; do
+        echo -ne " $ipaddress $1"
+        $IPTABLES_BIN -A INPUT -p tcp -s "$ipaddress" --dport "$1" -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p tcp --sport "$1" -m conntrack --ctstate ESTABLISHED -j ACCEPT
+    done
+}
+
+function ALLOW_PORTS_IP6S_UDP { 
+    echo  -ne "\n${C_INFO} Allowing IPS UDP: "
+    for ipaddress in $UPDIP6SIN; do
+        echo -ne " $ipaddress $1"
+        $IPTABLES_BIN -A INPUT -p udp -s "$ipaddress" --dport "$1" -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+        $IPTABLES_BIN -A OUTPUT -p udp --sport "$1" -m conntrack --ctstate ESTABLISHED -j ACCEPT
+    done
 }
 
 function ALLOW_LOCALHOST6 { # Allow localhost for firewall
-    echo " * Allowing Localhost..."
+    echo -e  "${C_INFO} Allowing Localhost..."
     $IP6TABLES_BIN -A INPUT -i lo -j ACCEPT
     $IP6TABLES_BIN -A OUTPUT -o lo -j ACCEPT
 }
@@ -54,7 +69,7 @@ function ALLOW_STATES6 { # Allow states
 }
 
 function DROP_EVERYTHING6 { # Drop all remaining traffic that doesn't fit with the rules
-    echo -ne "\n * Dropping everything else on TCP and UDP...\n"
+    echo -ne "\n${C_INFO} Dropping everything else on TCP and UDP...\n"
     # $IP6TABLES_BIN -A INPUT -p udp -j LOG --log-prefix "fw-bl-udp6-drop: " --log-level 7
     # $IP6TABLES_BIN -A INPUT -p tcp --syn -j LOG --log-prefix "fw-bl-tcp6-drop: " --log-level 7
     $IP6TABLES_BIN -A INPUT -p udp -j DROP
@@ -62,12 +77,11 @@ function DROP_EVERYTHING6 { # Drop all remaining traffic that doesn't fit with t
 }
 
 function IP_MASQ6 {
-    echo " * Not use masq for ipv6 yet bro"
-    # $IPTABLES_BIN -t nat -A POSTROUTING -o tun0 -j MASQUERADE
-    # $IPTABLES_BIN -A FORWARD -i tun0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-    # $IPTABLES_BIN -A FORWARD -i eth0 -o tun0 -j ACCEPT
+    echo -ne "${C_INFO} Not use masq for ipv6 yet bro"
+    # $IPTABLES_BIN -t nat -A POSTROUTING -o "${TUN}" -j MASQUERADE
+    # $IPTABLES_BIN -A FORWARD -i "${TUN}" -o "${ETH}" -m state --state RELATED,ESTABLISHED -j ACCEPT
+    # $IPTABLES_BIN -A FORWARD -i "${ETH}" -o "${TUN}" -j ACCEPT
 }
-
 
 function PORTSCAN_PROTECT {
     $IP6TABLES_BIN -N port-scanning
@@ -108,7 +122,7 @@ function BLOCK_IPSET_INTERFACE6 { # BLOCK_IPSET_INTERFACE eth0
 }
 
 function BLOCK_BOGONS6 {
-    echo "BLOCK_BOGONS6";
+    echo -ne "${C_INFO} BLOCK_BOGONS6";
     # _subnets=("224.0.0.0/4" "169.254.0.0/16" "172.16.0.0/12" "192.0.2.0/24" "192.168.0.0/16" "10.0.0.0/8" "0.0.0.0/8" "240.0.0.0/5")
     
     # for _sub in "${_subnets[@]}" ; do

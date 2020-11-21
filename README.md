@@ -4,8 +4,9 @@ https://twitch.tv/hughbord
 
 ## To Do
 
-* COLOURS / ANSI / ASCII
-* IP / Port white and nonwhite listing
+* IP / Port white and nonwhite listing / Whitelisting hard coded and from file
+* Finish IPV6 FIREWALL6.sh stuff
+* Help output ?
 
 * DOCKER support (workaround, after running iptables restart docker)
  * Docker command or script to generate the pure docker IPTABLES rule
@@ -95,3 +96,4 @@ Refurbishing this into a new script package.
 * https://github.com/messutied/colors.sh
 * https://www.cyberciti.biz/faq/unix-linux-bash-script-check-if-variable-is-empty/
 * https://github.com/tat3r
+* https://www.cyberciti.biz/faq/ipv6-address-example/
